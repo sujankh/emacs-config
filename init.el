@@ -89,7 +89,13 @@
 (global-ycmd-mode)
 
 ;; elpy
-;;(elpy-enable)
+;; Make sure to install dependencies from https://github.com/jorgenschaefer/elpy
+;; Also checkout M-x elpy-config to make sure all dependencies are set
+(use-package elpy
+  :ensure t
+  :config
+  (elpy-enable)
+  )
 
 ;;Frames jump
 (global-set-key [S-left] 'windmove-left)          ; move to left window
