@@ -24,8 +24,13 @@
   (company-mode -1))
 
 ;; Sidebar
-(require 'sr-speedbar)
-(sr-speedbar-open)
+(use-package sr-speedbar
+  :ensure t
+  :config
+  (sr-speedbar-open)
+  (custom-set-variables
+   '(speedbar-show-unknown-files t))
+  )
 
 ; delete whitespace from end of lines
 (add-hook 'before-save-hook 'delete-trailing-whitespace)
@@ -42,6 +47,11 @@
   (add-to-list 'auto-mode-alist '("\\.cu\\'" . cuda-mode))
 )
 
+(use-package bazel-mode
+  :ensure t
+  :init
+  (add-to-list 'auto-mode-alist '("BUILD" . bazel-mode))
+)
 
 ;;; Switch between .hh and .cc files
 (add-hook 'c-mode-common-hook
@@ -135,7 +145,10 @@
 ;; ZenBURRN
 ;;(load-theme 'zenburn t)
 ;; Jelly Beans
-(load-theme 'jbeans t)
+(use-package jbeans-theme
+  :ensure t
+  :config
+  (load-theme 'jbeans t))
 
 ;; All those backup files #filename# should be stored outside of the tree
 (setq backup-directory-alist
@@ -155,3 +168,14 @@
 ;; Show paren mode
 (show-paren-mode 1)
 (setq show-paren-delay 0)
+
+
+;;
+(use-package flymd
+  :ensure t
+  :config
+  (defun my-flymd-browser-function (url)
+    (let ((browse-url-browser-function 'browse-url-firefox))
+      (browse-url url)))
+  (setq flymd-browser-open-function 'my-flymd-browser-function)
+  )
