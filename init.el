@@ -35,9 +35,6 @@
    '(speedbar-show-unknown-files t))
   )
 
-; delete whitespace from end of lines
-(add-hook 'before-save-hook 'delete-trailing-whitespace)
-
 ;;Smooth scroll
 (use-package smooth-scrolling
   :ensure t
@@ -66,9 +63,6 @@
           (lambda()
             (local-set-key  (kbd "C-c o") 'ff-find-other-file)))
 
-;; Set line max length
-(setq column-enforce-column 121)
-;;(global-column-enforce-mode)
 
 ;;ycmd
 
@@ -146,9 +140,6 @@
 (use-package magit
   :ensure t)
 
-;;;; GLOBAL Settings
-;;Line number
-(global-linum-mode t)
 
 ;; ZenBURRN
 ;;(load-theme 'zenburn t)
@@ -163,20 +154,6 @@
       `((".*" . ,(concat user-emacs-directory "backups"))))
 (setq auto-save-file-name-transforms
       `((".*" ,(concat user-emacs-directory "backups"))))
-
-(global-hl-line-mode t)
-;; Disable the toolbar at the top since it's useless
-(if (functionp 'tool-bar-mode) (tool-bar-mode -1))
-
-;; Code Folding
-;;(global-set-key (kbd "C-c C-f") 'fold-this-all)
-(global-set-key (kbd "C-c C-f") 'fold-this)
-(global-set-key (kbd "C-c M-f") 'fold-this-unfold-all)
-
-;; Show paren mode
-(show-paren-mode 1)
-(setq show-paren-delay 0)
-
 
 ;;
 (use-package flymd
@@ -201,3 +178,38 @@
   (bind-key "C-h x" 'x86-lookup)
   :custom
   (x86-lookup-pdf "~/intel/manual_all_volumes.pdf"))
+
+;; Emacs-Specifics
+;; always follow the symlink (and edit the "actual" file directly)
+(setq vc-follow-symlinks t)
+
+;; Show paren mode
+(show-paren-mode 1)
+(setq show-paren-delay 0)
+
+(global-hl-line-mode t)
+;; Disable the toolbar at the top since it's useless
+(if (functionp 'tool-bar-mode) (tool-bar-mode -1))
+
+; delete whitespace from end of lines
+(add-hook 'before-save-hook 'delete-trailing-whitespace)
+
+;; Set line max length
+(setq column-enforce-column 121)
+;;(global-column-enforce-mode)
+
+;;Line number
+(global-linum-mode t)
+
+;; Code Folding
+;;(global-set-key (kbd "C-c C-f") 'fold-this-all)
+(global-set-key (kbd "C-c C-f") 'fold-this)
+(global-set-key (kbd "C-c M-f") 'fold-this-unfold-all)
+
+;; Show paren mode
+(show-paren-mode 1)
+(setq show-paren-delay 0)
+
+
+(provide 'init)
+;;; init.el ends here
