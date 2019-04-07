@@ -1,6 +1,7 @@
 ;;; init --- Custom init for C++/Python
 ;;; Commentary: skhadka
 
+;;; Code
 (require 'package)
 (add-to-list 'package-archives
          '("melpa" . "http://melpa.org/packages/") t)
@@ -140,14 +141,18 @@
 (use-package magit
   :ensure t)
 
+;; Themes
 
-;; ZenBURRN
-;;(load-theme 'zenburn t)
 ;; Jelly Beans
 (use-package jbeans-theme
   :ensure t
   :config
   (load-theme 'jbeans t))
+
+;; (use-package zenburn-theme
+;;   :ensure t
+;;   :config
+;;   (load-theme 'zenburn t))
 
 ;; All those backup files #filename# should be stored outside of the tree
 (setq backup-directory-alist
@@ -187,7 +192,9 @@
 (show-paren-mode 1)
 (setq show-paren-delay 0)
 
-(global-hl-line-mode t)
+;; Highlight
+;;(global-hl-line-mode t)
+
 ;; Disable the toolbar at the top since it's useless
 (if (functionp 'tool-bar-mode) (tool-bar-mode -1))
 
@@ -209,7 +216,6 @@
 ;; Show paren mode
 (show-paren-mode 1)
 (setq show-paren-delay 0)
-
 
 (provide 'init)
 ;;; init.el ends here
