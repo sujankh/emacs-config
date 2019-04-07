@@ -1,3 +1,6 @@
+;;; init --- Custom init for C++/Python
+;;; Commentary: skhadka
+
 (require 'package)
 (add-to-list 'package-archives
          '("melpa" . "http://melpa.org/packages/") t)
@@ -41,6 +44,7 @@
   :init
   (setq smooth-scrolling-mode 1))
 
+;;; All modes
 (use-package cuda-mode
   :ensure t
   :init
@@ -52,6 +56,10 @@
   :init
   (add-to-list 'auto-mode-alist '("BUILD" . bazel-mode))
 )
+
+(use-package go-mode
+  :ensure t)
+
 
 ;;; Switch between .hh and .cc files
 (add-hook 'c-mode-common-hook
@@ -179,3 +187,17 @@
       (browse-url url)))
   (setq flymd-browser-open-function 'my-flymd-browser-function)
   )
+
+;;--- Assembly packages---
+
+;; Similar to godbolt
+(use-package rmsbolt
+  :ensure t)
+
+;; Make sure intel manual is downloaded at ~/intel
+(use-package x86-lookup
+  :ensure t
+  :init
+  (bind-key "C-h x" 'x86-lookup)
+  :custom
+  (x86-lookup-pdf "~/intel/manual_all_volumes.pdf"))
