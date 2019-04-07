@@ -27,6 +27,7 @@
 (defun my-gud-hook ()
   (company-mode -1))
 
+
 ;; Sidebar
 (use-package sr-speedbar
   :ensure t
@@ -144,15 +145,25 @@
 ;; Themes
 
 ;; Jelly Beans
-(use-package jbeans-theme
-  :ensure t
-  :config
-  (load-theme 'jbeans t))
+;; (use-package jbeans-theme
+;;   :ensure t
+;;   :config
+;;   (load-theme 'jbeans t))
 
 ;; (use-package zenburn-theme
 ;;   :ensure t
 ;;   :config
 ;;   (load-theme 'zenburn t))
+
+(use-package nimbus-theme
+  :ensure t
+  :config
+  (load-theme 'nimbus t))
+
+(use-package spaceline
+  :ensure t
+  :config
+  (spaceline-emacs-theme))
 
 ;; All those backup files #filename# should be stored outside of the tree
 (setq backup-directory-alist
@@ -193,7 +204,7 @@
 (setq show-paren-delay 0)
 
 ;; Highlight
-;;(global-hl-line-mode t)
+(global-hl-line-mode t)
 
 ;; Disable the toolbar at the top since it's useless
 (if (functionp 'tool-bar-mode) (tool-bar-mode -1))
