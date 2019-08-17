@@ -165,6 +165,12 @@
   :config
   (spaceline-emacs-theme))
 
+;; Modern C++ Font
+(use-package modern-cpp-font-lock
+  :ensure t
+  :config
+  (modern-c++-font-lock-global-mode t))
+
 ;; All those backup files #filename# should be stored outside of the tree
 (setq backup-directory-alist
       `((".*" . ,(concat user-emacs-directory "backups"))))
@@ -227,6 +233,16 @@
 ;; Show paren mode
 (show-paren-mode 1)
 (setq show-paren-delay 0)
+
+;; clang-format
+;; ::SHELL-BEGIN
+;; sudo apt install clang-format
+;; ::SHELL-END
+(use-package clang-format
+  :ensure t
+  :init
+  (bind-key "C-c TAB" 'clang-format-buffer)
+)
 
 (provide 'init)
 ;;; init.el ends here
