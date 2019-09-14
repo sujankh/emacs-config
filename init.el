@@ -3,8 +3,15 @@
 
 ;;; Code
 (require 'package)
-(add-to-list 'package-archives
-         '("melpa" . "http://melpa.org/packages/") t)
+;; (add-to-list 'package-archives
+;;          '("melpa" . "http://melpa.org/packages/") t)
+
+(setq package-archives
+      '(("GNU ELPA"     . "https://elpa.gnu.org/packages/")
+        ("MELPA"        . "https://melpa.org/packages/"))
+      package-archive-priorities
+      '(("GNU ELPA"     . 0)
+        ("MELPA"        . 5)))
 
 (package-initialize)
 
@@ -26,7 +33,6 @@
 (add-hook 'gud-mode-hook 'my-gud-hook)
 (defun my-gud-hook ()
   (company-mode -1))
-
 
 ;; Sidebar
 (use-package sr-speedbar
@@ -65,51 +71,92 @@
           (lambda()
             (local-set-key  (kbd "C-c o") 'ff-find-other-file)))
 
+;; ycmd
+;; Thanks to https://onze.io/emacs/c++/2017/03/16/emacs-cpp.html
 
-;;ycmd
+(use-package yasnippet
+  :ensure t
+  :diminish yas-minor-mode
+  :init (yas-global-mode t))
 
 (use-package company
+  :defer 10
+  :diminish company-mode
   :ensure t
+  :bind (:map company-active-map
+              ("M-j" . company-select-next)
+              ("M-k" . company-select-previous))
+  :preface
+  ;; enable yasnippet everywhere
+  (defvar company-mode/enable-yas t
+    "Enable yasnippet for all backends.")
+  (defun company-mode/backend-with-yas (backend)
+    (if (or
+         (not company-mode/enable-yas)
+         (and (listp backend) (member 'company-yasnippet backend)))
+        backend
+      (append (if (consp backend) backend (list backend))
+              '(:with company-yasnippet))))
+
+  :init (global-company-mode t)
+  :config
+  ;; no delay no autocomplete
+  (setq
+   company-idle-delay 0
+   company-minimum-prefix-length 2
+   company-tooltip-limit 20)
+
+  (setq company-backends
+                 (mapcar #'company-mode/backend-with-yas company-backends)
+		 )
   )
 
 (use-package company-ycmd
   :ensure t
-  :config
+  :init
   (company-ycmd-setup)
+  :config
+  (add-to-list 'company-backends (company-mode/backend-with-yas 'company-ycmd))
   )
 
 ;; Refer to https://github.com/sujankh/emacs-ycmd-linuxkernel for guide to build/install ycmd
+;; Note that the installation of ycmd also fetches clangd
+;; BEGIN
+;; mkdir -p $HOME/tools/
+;; cd $HOME/tools/
+;; python3 ./build.py --clangd-completer --build-dir ./build
+;; END
+
 (use-package ycmd
   :ensure t
+  :init
+  (add-hook 'after-init-hook #'global-ycmd-mode)
+  :config
+  (set-variable 'ycmd-server-command `("python3",  (file-truename  "/home/skhadka/tools/ycmd/ycmd")))
+  (set-variable 'ycmd-extra-conf-handler 'load)
+  (setq company-idle-delay 0.2)
+  (eval-after-load 'cc-mode '(define-key c-mode-base-map (kbd "M-.") (function ycmd-goto)))
+  (global-ycmd-mode)
 )
 
-(add-hook 'after-init-hook #'global-ycmd-mode)
-(set-variable 'ycmd-server-command `("python3",  (file-truename  "/home/skhadka/tools/ycmd/ycmd")))
-(set-variable 'ycmd-extra-conf-handler 'load)
-(setq company-idle-delay 0.2)
-(eval-after-load 'cc-mode '(define-key c-mode-base-map (kbd "M-.") (function ycmd-goto)))
-
-
-(use-package flycheck-ycmd
-  :ensure t
-  :config
-  (flycheck-ycmd-setup)
-  (global-flycheck-mode)
-  )
-;; Company and flycheck can interfere in emacs -nw.
-(when (not (display-graphic-p))
-    (setq flycheck-indication-mode nil))
-
-(global-ycmd-mode)
+;; (use-package flycheck-ycmd
+;;   :ensure t
+;;   :config
+;;   (flycheck-ycmd-setup)
+;;   (global-flycheck-mode)
+;;   )
+;; ;; Company and flycheck can interfere in emacs -nw.
+;; (when (not (display-graphic-p))
+;;     (setq flycheck-indication-mode nil))
 
 ;; elpy
 ;; Make sure to install dependencies from https://github.com/jorgenschaefer/elpy
 ;; Also checkout M-x elpy-config to make sure all dependencies are set
-(use-package elpy
-  :ensure t
-  :config
-  (elpy-enable)
-  )
+;; (use-package elpy
+;;   :ensure t
+;;   :config
+;;   (elpy-enable)
+;;   )
 
 ;;Frames jump
 (global-set-key [S-left] 'windmove-left)          ; move to left window
@@ -230,14 +277,8 @@
 (global-set-key (kbd "C-c C-f") 'fold-this)
 (global-set-key (kbd "C-c M-f") 'fold-this-unfold-all)
 
-;; Show paren mode
-(show-paren-mode 1)
-(setq show-paren-delay 0)
-
 ;; clang-format
-;; ::SHELL-BEGIN
 ;; sudo apt install clang-format
-;; ::SHELL-END
 (use-package clang-format
   :ensure t
   :init
