@@ -63,6 +63,15 @@
 )
 
 (use-package go-mode
+  :ensure t
+  :init
+  (add-to-list 'auto-mode-alist '("\\.go\\'" . go-mode))
+  (setq gofmt-command "/home/skhadka/dev/na/tools/goimports")
+  (setq go-command "/home/skhadka/dev/na/tools/go")
+  (add-hook 'before-save-hook 'gofmt-before-save)
+)
+
+(use-package protobuf-mode
   :ensure t)
 
 
@@ -284,6 +293,8 @@
   :init
   (bind-key "C-c TAB" 'clang-format-buffer)
 )
+
+;;(require 'atg)
 
 (provide 'init)
 ;;; init.el ends here
